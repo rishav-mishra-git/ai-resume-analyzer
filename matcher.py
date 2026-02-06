@@ -1,14 +1,15 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+def match_skills(resume_text: str, user_skills: list):
+    matched = []
+    missing = []
 
-def match_resume(resume_text: str, job_text: str) -> float:
-    """
-    Calculates similarity score between resume and job description
-    """
-    vectorizer = TfidfVectorizer()
+    for skill in user_skills:
+        skill_clean = skill.lower().strip()
+        if skill_clean in resume_text:
+            matched.append(skill_clean)
+        else:
+            missing.append(skill_clean)
 
-    vectors = vectorizer.fit_transform([resume_text, job_text])
+    accuracy = (len(matched) / len(user_skills)) * 100 if user_skills else 0
 
-    similarity_score = cosine_similarity(vectors[0], vectors[1])[0][0]
+    return round(accuracy, 2), matched, missing
 
-    return round(similarity_score * 100, 2)

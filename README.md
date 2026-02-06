@@ -1,28 +1,32 @@
-# AI Resume Analyzer & Job Match Predictor
+# Skill-Based Resume Matching System
 
-An NLP-powered web application that analyzes resumes and matches them with job descriptions using Machine Learning techniques. The application calculates a job-fit score, extracts relevant skills, and identifies missing skills to help candidates improve their resumes.
+A Streamlit-based NLP application that allows users to upload a **resume PDF**, enter **preferred skills**, and receive a **skill match accuracy score** along with matched and missing skills.  
+The system uses PDF text extraction and NLP preprocessing to perform accurate skill matching.
 
 ---
 
 ## 🚀 Features
-- Compare resume text with job descriptions
+- Upload resume in **PDF format**
+- Enter **custom skills** (comma-separated)
+- Extracts text from resume automatically
 - NLP-based text preprocessing
-- Skill extraction from resume and job description
-- Resume–job match percentage using TF-IDF and Cosine Similarity
-- Interactive web interface built with Streamlit
+- Skill matching against user-defined preferences
+- Displays:
+  - Match Accuracy (%)
+  - Matched Skills
+  - Missing Skills
+- Interactive web interface using Streamlit
 
 ---
 
 ## 🧠 Technologies Used
 - **Python**
+- **Natural Language Processing (NLTK)**
+- **Streamlit**
+- **PyPDF2** (PDF text extraction)
 - **NumPy**
 - **pandas**
-- **Natural Language Processing (NLTK)**
-- **Machine Learning (TF-IDF, Cosine Similarity)**
-- **Streamlit**
-- **scikit-learn**
 
 ---
 
 ## 📁 Project Structure
-

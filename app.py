@@ -1,57 +1,52 @@
 import streamlit as st
+from pdf_reader import extract_text_from_pdf
 from preprocess import clean_text
-from skills import extract_skills
-from matcher import match_resume
+from matcher import match_skills
 
-# Page configuration
 st.set_page_config(
-    page_title="AI Resume Analyzer",
+    page_title="Skill-Based Resume Matcher",
     page_icon="📄",
     layout="centered"
 )
 
-st.title("📄 AI Resume Analyzer & Job Match Predictor")
-st.write("Analyze your resume against a job description using NLP and ML.")
+st.title("📄 Skill-Based Resume Matching System")
+st.write("Upload a resume PDF and enter required skills to check matching accuracy.")
 
-# Inputs
-resume_text = st.text_area("📌 Paste Resume Text", height=200)
-job_text = st.text_area("📌 Paste Job Description", height=200)
+# Upload PDF
+uploaded_pdf = st.file_uploader("📎 Upload Resume (PDF)", type=["pdf"])
 
-# Button
+# Skill input
+skills_input = st.text_input(
+    "🛠 Enter required skills (comma-separated)",
+    placeholder="python, machine learning, nlp, pandas"
+)
+
 if st.button("🔍 Analyze Resume"):
-    if resume_text.strip() == "" or job_text.strip() == "":
-        st.warning("⚠️ Please provide both Resume and Job Description.")
+    if uploaded_pdf is None or not skills_input.strip():
+        st.warning("⚠️ Please upload a PDF and enter skills.")
     else:
-        # Preprocessing
-        clean_resume = clean_text(resume_text)
-        clean_job = clean_text(job_text)
+        # Extract and clean resume text
+        raw_text = extract_text_from_pdf(uploaded_pdf)
+        clean_resume = clean_text(raw_text)
 
-        # Matching score
-        score = match_resume(clean_resume, clean_job)
+        # Process user skills
+        user_skills = [skill.strip() for skill in skills_input.split(",")]
 
-        # Skill extraction
-        resume_skills = extract_skills(clean_resume)
-        job_skills = extract_skills(clean_job)
+        # Match skills
+        accuracy, matched_skills, missing_skills = match_skills(
+            clean_resume, user_skills
+        )
 
-        matched_skills = list(set(resume_skills) & set(job_skills))
-        missing_skills = list(set(job_skills) - set(resume_skills))
-
-        # Output
-        st.subheader("📊 Results")
-        st.metric(label="Resume Match Score", value=f"{score}%")
+        # Display results
+        st.subheader("📊 Matching Results")
+        st.metric("Skill Match Accuracy", f"{accuracy}%")
 
         col1, col2 = st.columns(2)
 
         with col1:
             st.write("### ✅ Matched Skills")
-            if matched_skills:
-                st.write(matched_skills)
-            else:
-                st.write("No matched skills found")
+            st.write(matched_skills if matched_skills else "None")
 
         with col2:
             st.write("### ❌ Missing Skills")
-            if missing_skills:
-                st.write(missing_skills)
-            else:
-                st.write("No missing skills 🎉")
+            st.write(missing_skills if missing_skills else "None 🎉")
